@@ -6,7 +6,7 @@
 #define FILE_COUNT_MAX 16
 
 typedef enum {
-    WORD, BYTE, LINE, CHARS, ALL
+    WORD, BYTE, LINE, CHAR, ALL
 } COUNT_MODE;
 
 typedef enum {
@@ -27,8 +27,27 @@ int parse_options(char **options, int opt_count, WCArgs *wcargs_p) {
         strcpy(buf, options[i]);
         if (buf[0] != '-') {
             strcpy((wcargs_p->files)[(wcargs_p->file_count)++], buf);
+        } else {
+            switch (buf[0]) {
+                case 'w':
+                    wcargs_p->count_mode = WORD;
+                    break;
+                case 'l':
+                    wcargs_p->count_mode = LINE;
+                    break;
+                case 'b':
+                    wcargs_p->count_mode = CHAR;
+                    break;
+                case 'c':
+                    wcargs_p->count_mode = BYTE;
+                    break;
+                default:
+                    return -1;
+                    break;
+            }
         }
     }
+    if (wcargs_p->file_count > 0) { wcargs_p->input_type = INP_FILE; }
     return 0;
 }
 
