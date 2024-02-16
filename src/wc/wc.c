@@ -2,8 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define ARG_LENGTH_MAX 128
+#define ARG_LEN_MAX 128
 #define FILE_COUNT_MAX 16
+#define COUNT_STR_LEN_MAX 32
 
 typedef enum {
     WORD, BYTE, LINE, CHAR, ALL
@@ -27,7 +28,7 @@ typedef struct {
 
 WCArgs* init_wcargs() {
     WCArgs *new_wcargs_p = malloc(sizeof(WCArgs));
-    new_wcargs_p->files = malloc(sizeof(char[FILE_COUNT_MAX][ARG_LENGTH_MAX]));
+    new_wcargs_p->files = malloc(sizeof(char[FILE_COUNT_MAX][ARG_LEN_MAX]));
     new_wcargs_p->file_count = 0;
     new_wcargs_p->count_mode = ALL;
     new_wcargs_p->input_type = STDIN;
@@ -43,7 +44,7 @@ WCArgs* init_wcargs() {
 void parse_options(char **options, int opt_count, WCArgs *wcargs_p) {
     // Skip the first argv entry
     for (int i = 1; i < opt_count; ++i) {
-        char buf[ARG_LENGTH_MAX];
+        char buf[ARG_LEN_MAX];
         strcpy(buf, options[i]);
         // Expecting flags to be a single character starting with a '-'
         if (buf[0] != '-') {
