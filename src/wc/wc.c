@@ -37,8 +37,8 @@ WCArgs* init_wcargs() {
 
 /*
  * Set up the program's flags
- * @options expects argv to be passed to it
- * @opt_count expects argc to be passed to it
+ * options expects argv to be passed to it
+ * opt_count expects argc to be passed to it
  */
 void parse_options(char **options, int opt_count, WCArgs *wcargs_p) {
     // Skip the first argv entry
@@ -56,7 +56,7 @@ void parse_options(char **options, int opt_count, WCArgs *wcargs_p) {
                 case 'l':
                     wcargs_p->count_mode = LINE;
                     break;
-                case 'b':
+                case 'm':
                     wcargs_p->count_mode = CHAR;
                     break;
                 case 'c':
