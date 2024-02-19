@@ -126,8 +126,10 @@ void count(FILE *file, char *count_str, COUNTER_FLAGS counter_flags) {
         if (c == ' ' || c == '\n') {
             while (is_whitespace(c)) {
                 if (c == '\n') ++counter.lines;
-                ++counter.chars;
                 c = fgetc(file);
+                if (c == EOF) break;
+                ++counter.chars;
+                ++counter.bytes;
             }
             ++counter.words;
         }
