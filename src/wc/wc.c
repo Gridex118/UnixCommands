@@ -159,10 +159,12 @@ int wc(WCArgs *wcargs_p) {
 int main(int argc, char *argv[]) {
     WCArgs *wcargs_p = init_wcargs();
     if (wcargs_p == NULL) return -1;
-    // if no cmd line options were passed, use options set up in init_wcargs
+    // if no cmd line options were passed, use options set up in init_wcargs and toggle all flags except -c
     if (argc > 1) {
         parse_options(argv, argc, wcargs_p);
         if (wcargs_p->error != NONE) return -1;
+    } else {
+        toggle_flags("-lwm", wcargs_p);
     }
     return wc(wcargs_p);
 }
