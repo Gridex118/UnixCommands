@@ -53,9 +53,7 @@ WCArgs* init_wcargs() {
     return new_wcargs_p;
 }
 
-/*
- * The first character of flag_str should be a '-' which has to be skipped
- */
+ // The first character of flag_str should be a '-' which has to be skipped
 void toggle_flags(char flag_str[], WCArgs *wcargs_p) {
     int i = 1;
     while (flag_str[i] != '\0') {
@@ -113,9 +111,7 @@ static inline void append_count(char *count_str, size_t count) {
     strcat(count_str, buf);
 }
 
-/*
- * Store the queried count information for file in count_str
- */
+ // Store the queried count information for file in count_str
 void count(FILE *file, char *count_str, COUNTER_FLAGS counter_flags) {
     count_str[0] = '\0';
     Counter counter = {0, 0, 0, 0};
