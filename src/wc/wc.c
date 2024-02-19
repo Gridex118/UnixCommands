@@ -107,6 +107,12 @@ void parse_options(char **options, int opt_count, WCArgs *wcargs_p) {
     }
 }
 
+static inline void append_count(char *count_str, size_t count) {
+    char buf[16];
+    snprintf(buf, 16, "%ld ", count);
+    strcat(count_str, buf);
+}
+
 /*
  * Store the queried count information for file in count_str
  */
@@ -126,26 +132,10 @@ void count(FILE *file, char *count_str, COUNTER_FLAGS counter_flags) {
             ++counter.words;
         }
     }
-    if (counter_flags.lines) {
-        char lines_str[16];
-        snprintf(lines_str, 16, "%ld ", counter.lines);
-        strcat(count_str, lines_str);
-    }
-    if (counter_flags.words) {
-        char words_str[16];
-        snprintf(words_str, 16, "%ld ", counter.words);
-        strcat(count_str, words_str);
-    }
-    if (counter_flags.chars) {
-        char chars_str[16];
-        snprintf(chars_str, 16, "%ld ", counter.chars);
-        strcat(count_str, chars_str);
-    }
-    if (counter_flags.bytes) {
-        char bytes_str[16];
-        snprintf(bytes_str, 16, "%ld ", counter.bytes);
-        strcat(count_str, bytes_str);
-    }
+    if (counter_flags.lines) append_count(count_str, counter.lines);
+    if (counter_flags.words) append_count(count_str, counter.words);
+    if (counter_flags.chars) append_count(count_str, counter.chars);
+    if (counter_flags.bytes) append_count(count_str, counter.bytes);
 }
 
 int wc(WCArgs *wcargs_p) {
