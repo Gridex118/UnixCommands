@@ -54,3 +54,4 @@ dkms.conf
 
 # Directories to Exclude
 .ccls-cache/
+build/
