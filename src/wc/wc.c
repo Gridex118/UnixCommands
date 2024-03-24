@@ -53,9 +53,7 @@ WCArgs* init_wcargs() {
     return new_wcargs_p;
 }
 
-/*
- * The first character of flag_str should be a '-' which has to be skipped
- */
+ // The first character of flag_str should be a '-' which has to be skipped
 void toggle_flags(char flag_str[], WCArgs *wcargs_p) {
     int i = 1;
     while (flag_str[i] != '\0') {
@@ -107,9 +105,13 @@ void parse_options(char **options, int opt_count, WCArgs *wcargs_p) {
     }
 }
 
-/*
- * Store the queried count information for file in count_str
- */
+static inline void append_count(char *count_str, size_t count) {
+    char buf[16];
+    snprintf(buf, 16, "%ld ", count);
+    strcat(count_str, buf);
+}
+
+ // Store the queried count information for file in count_str
 void count(FILE *file, char *count_str, COUNTER_FLAGS counter_flags) {
     count_str[0] = '\0';
     Counter counter = {0, 0, 0, 0};
@@ -120,32 +122,18 @@ void count(FILE *file, char *count_str, COUNTER_FLAGS counter_flags) {
         if (c == ' ' || c == '\n') {
             while (is_whitespace(c)) {
                 if (c == '\n') ++counter.lines;
-                ++counter.chars;
                 c = fgetc(file);
+                if (c == EOF) break;
+                ++counter.chars;
+                ++counter.bytes;
             }
             ++counter.words;
         }
     }
-    if (counter_flags.lines) {
-        char lines_str[16];
-        snprintf(lines_str, 16, "%ld ", counter.lines);
-        strcat(count_str, lines_str);
-    }
-    if (counter_flags.words) {
-        char words_str[16];
-        snprintf(words_str, 16, "%ld ", counter.words);
-        strcat(count_str, words_str);
-    }
-    if (counter_flags.chars) {
-        char chars_str[16];
-        snprintf(chars_str, 16, "%ld ", counter.chars);
-        strcat(count_str, chars_str);
-    }
-    if (counter_flags.bytes) {
-        char bytes_str[16];
-        snprintf(bytes_str, 16, "%ld ", counter.bytes);
-        strcat(count_str, bytes_str);
-    }
+    if (counter_flags.lines) append_count(count_str, counter.lines);
+    if (counter_flags.words) append_count(count_str, counter.words);
+    if (counter_flags.chars) append_count(count_str, counter.chars);
+    if (counter_flags.bytes) append_count(count_str, counter.bytes);
 }
 
 int wc(WCArgs *wcargs_p) {
@@ -169,10 +157,12 @@ int wc(WCArgs *wcargs_p) {
 int main(int argc, char *argv[]) {
     WCArgs *wcargs_p = init_wcargs();
     if (wcargs_p == NULL) return -1;
-    // if no cmd line options were passed, use options set up in init_wcargs
+    // if no cmd line options were passed, use options set up in init_wcargs and toggle all flags except -c
     if (argc > 1) {
         parse_options(argv, argc, wcargs_p);
         if (wcargs_p->error != NONE) return -1;
+    } else {
+        toggle_flags("-lwm", wcargs_p);
     }
     return wc(wcargs_p);
 }
