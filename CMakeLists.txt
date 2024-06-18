@@ -7,6 +7,12 @@ set(WC_SOURCE
     src/wc/wc.c
     )
 
+set(LS_SOURCE
+    src/ls/ls.c
+    )
+
 add_executable(wc.out ${WC_SOURCE})
+add_executable(ls.out ${LS_SOURCE})
 
 target_compile_options(wc.out PRIVATE -Wall -O0 -g)
+target_compile_options(ls.out PRIVATE -Wall -Wextra -O0 -g)
