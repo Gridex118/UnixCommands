@@ -7,8 +7,8 @@
 #define DIRECTORY_COUNT_MAX 16
 
 typedef struct {
-    unsigned int hidden: 1;
-    unsigned int implied: 1;
+    unsigned int show_hidden: 1;
+    unsigned int show_this_and_parent: 1;
 } LsFlags;
 
 typedef struct {
@@ -19,8 +19,8 @@ typedef struct {
 
 void init_lsargs(LsArgs *restrict lsargs_p) {
     lsargs_p->directory_count = 0;
-    lsargs_p->flags.hidden = 0;
-    lsargs_p->flags.implied = 0;
+    lsargs_p->flags.show_hidden = 0;
+    lsargs_p->flags.show_this_and_parent = 0;
 }
 
 void toggle_flags(char *const flags_str, LsArgs *restrict lsargs_p) {
@@ -28,9 +28,9 @@ void toggle_flags(char *const flags_str, LsArgs *restrict lsargs_p) {
     while (flags_str[i] != '\0') {
         switch (flags_str[i]) {
             case 'a':
-                lsargs_p->flags.implied = 1;
+                lsargs_p->flags.show_this_and_parent = 1;
             case 'A':
-                lsargs_p->flags.hidden = 1;
+                lsargs_p->flags.show_hidden = 1;
                 break;
         }
         ++i;
@@ -53,7 +53,7 @@ void parse_options(char **const options, const int opt_count, LsArgs *restrict l
     }
 }
 
-void ls(LsArgs *const lsargs_p) {
+int ls(LsArgs *const lsargs_p) {
     for (int i = 0; i < lsargs_p->directory_count; ++i) {
         char *const directory_name = lsargs_p->directories[i];
         DIR *dir = opendir(directory_name);
@@ -62,21 +62,25 @@ void ls(LsArgs *const lsargs_p) {
             while ((entry = readdir(dir)) != NULL) {
                 char *const name = entry->d_name;
                 if (name[0] == '.') {
-                    if (!lsargs_p->flags.hidden) continue;
+                    if (!lsargs_p->flags.show_hidden)
+                        continue;
+                    if ((strcmp(name, ".") == 0 || strcmp(name, "..") == 0) && !lsargs_p->flags.show_this_and_parent)
+                        continue;
                 }
                 printf("%s\n", name);
             }
             closedir(dir);
         } else {
             fputs("Could not open directory\n", stderr);
+            return -1;
         }
     }
+    return 0;
 }
 
 int main(int argc, char *argv[]) {
     LsArgs lsargs;
     init_lsargs(&lsargs);
     parse_options(argv, argc, &lsargs);
-    ls(&lsargs);
-    return 0;
+    return ls(&lsargs);
 }
