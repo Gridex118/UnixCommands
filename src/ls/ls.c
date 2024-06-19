@@ -53,7 +53,7 @@ void parse_options(char **const options, const int opt_count, LsArgs *restrict l
     }
 }
 
-void ls(LsArgs *const lsargs_p) {
+int ls(LsArgs *const lsargs_p) {
     for (int i = 0; i < lsargs_p->directory_count; ++i) {
         char *const directory_name = lsargs_p->directories[i];
         DIR *dir = opendir(directory_name);
@@ -69,14 +69,15 @@ void ls(LsArgs *const lsargs_p) {
             closedir(dir);
         } else {
             fputs("Could not open directory\n", stderr);
+            return -1;
         }
     }
+    return 0;
 }
 
 int main(int argc, char *argv[]) {
     LsArgs lsargs;
     init_lsargs(&lsargs);
     parse_options(argv, argc, &lsargs);
-    ls(&lsargs);
-    return 0;
+    return ls(&lsargs);
 }
