@@ -62,7 +62,10 @@ int ls(LsArgs *const lsargs_p) {
             while ((entry = readdir(dir)) != NULL) {
                 char *const name = entry->d_name;
                 if (name[0] == '.') {
-                    if (!lsargs_p->flags.show_hidden) continue;
+                    if (!lsargs_p->flags.show_hidden)
+                        continue;
+                    if ((strcmp(name, ".") == 0 || strcmp(name, "..") == 0) && !lsargs_p->flags.show_this_and_parent)
+                        continue;
                 }
                 printf("%s\n", name);
             }
