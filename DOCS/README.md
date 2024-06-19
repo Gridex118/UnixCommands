@@ -5,6 +5,6 @@ Implementing a few common unix commands
 | Command | Progress                   |
 | ------- | -------------------------- |
 | wc      | can parse options          |
-| ls      |                            |
+| ls      | supports a and A options   |
 | grep    |                            |
 | ed      |                            |
