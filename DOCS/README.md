@@ -4,7 +4,7 @@ Implementing a few common unix commands
 ## Progress
 | Command | Progress                   |
 | ------- | -------------------------- |
-| wc      | can parse options          |
+| wc      | supports l, m, w options   |
 | ls      | supports a and A options   |
 | grep    |                            |
 | ed      |                            |
